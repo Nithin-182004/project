@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}All Users{% endblock %}
+{% block header %}User Management{% endblock %}
+{% block subheader %}All registered users{% endblock %}
+{% block content %}
+<div style="overflow-x: auto;">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Phone</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>PAN</th>
+                <th>Status</th>
+                <th>Verified</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.user_id }}</td>
+                <td>{{ user.country_code }}{{ user.phone_number }}</td>
+                <td>{{ user.full_name or '-' }}</td>
+                <td>{{ user.email or '-' }}</td>
+                <td>{{ user.pan_card_number or '-' }}</td>
+                <td><span class="badge badge-success">{{ user.status }}</span></td>
+                <td>
+                    {% if user.phone_verified %}
+                    <span class="badge badge-success">✓</span>
+                    {% else %}
+                    <span class="badge badge-danger">✗</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="links" style="margin-top: 20px;">
+    <a href="{{ url_for('index') }}">← Back to Home</a>
+</div>
+{% endblock %}

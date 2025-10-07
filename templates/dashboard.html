@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block header %}Dashboard{% endblock %}
+{% block subheader %}Welcome, {{ user.full_name or user.phone_number }}{% endblock %}
+{% block content %}
+<div class="card">
+    <h3>Profile Information</h3>
+    <div class="info-row">
+        <span class="info-label">Phone:</span>
+        <span class="info-value">{{ user.country_code }}{{ user.phone_number }}</span>
+    </div>
+    <div class="info-row">
+        <span class="info-label">Name:</span>
+        <span class="info-value">{{ user.full_name or 'Not provided' }}</span>
+    </div>
+    <div class="info-row">
+        <span class="info-label">Email:</span>
+        <span class="info-value">{{ user.email or 'Not provided' }}</span>
+    </div>
+    <div class="info-row">
+        <span class="info-label">PAN Card:</span>
+        <span class="info-value">
+            {{ user.pan_card_number or 'Not provided' }}
+            {% if user.pan_verified %}
+            <span class="badge badge-success">Verified</span>
+            {% endif %}
+        </span>
+    </div>
+    <div class="info-row">
+        <span class="info-label">Status:</span>
+        <span class="info-value">
+            <span class="badge badge-success">{{ user.status }}</span>
+        </span>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Active Sessions ({{ sessions|length }})</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Device</th>
+                <th>IP Address</th>
+                <th>Last Activity</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in sessions %}
+            <tr>
+                <td>{{ s.device_type or 'Unknown' }}</td>
+                <td>{{ s.ip_address }}</td>
+                <td>{{ s.last_activity.strftime('%Y-%m-%d %H:%M') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<a href="{{ url_for('logout') }}"><button class="btn btn-secondary">Logout</button></a>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Verify Login OTP{% endblock %}
+{% block header %}Verify Login{% endblock %}
+{% block subheader %}Enter the OTP sent to your phone{% endblock %}
+{% block content %}
+<form method="POST">
+    <div class="form-group">
+        <label>Enter OTP *</label>
+        <input type="text" name="otp" placeholder="123456" maxlength="6" required autofocus style="text-align: center; font-size: 24px; letter-spacing: 10px;">
+    </div>
+    
+    <button type="submit" class="btn">Verify & Login</button>
+    
+    <div class="links">
+        <a href="{{ url_for('login') }}">Back to Login</a> |
+        <a href="{{ url_for('resend_login_otp') }}">Resend OTP</a>
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - WhatsApp Auth</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .signup-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            max-width: 450px;
+            width: 100%;
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        .header-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .header p {
+            opacity: 0.95;
+            font-size: 15px;
+        }
+        
+        .form-content {
+            padding: 35px 30px;
+        }
+        
+        .alert {
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        label .required {
+            color: #dc3545;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #25D366;
+            box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.1);
+        }
+        
+        input::placeholder {
+            color: #999;
+        }
+        
+        .phone-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .phone-group select {
+            width: 110px;
+            flex-shrink: 0;
+        }
+        
+        .phone-group input {
+            flex: 1;
+        }
+        
+        .input-hint {
+            font-size: 12px;
+            color: #666;
+            margin-top: 6px;
+            display: block;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e0e0e0;
+        }
+        
+        .divider span {
+            padding: 0 15px;
+        }
+        
+        .login-link {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .login-link p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        
+        .login-link a {
+            color: #128C7E;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            transition: color 0.3s ease;
+        }
+        
+        .login-link a:hover {
+            color: #25D366;
+        }
+        
+        .feature-list {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .feature-list h3 {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #555;
+        }
+        
+        .feature-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .feature-icon {
+            width: 20px;
+            height: 20px;
+            background: #25D366;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        
+        @media (max-width: 480px) {
+            .signup-container {
+                border-radius: 0;
+            }
+            
+            .form-content {
+                padding: 25px 20px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <div class="header">
+            <div class="header-icon">📱</div>
+            <h1>Create Account</h1>
+            <p>Join our secure messaging platform</p>
+        </div>
+        
+        <div class="form-content">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'success' if category == 'success' else 'error' }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <form method="POST" action="/signup">
+                <div class="form-group">
+                    <label>Phone Number <span class="required">*</span></label>
+                    <div class="phone-group">
+                        <select name="country_code" required>
+                            <option value="+91">🇮🇳 +91</option>
+                            <option value="+1">🇺🇸 +1</option>
+                            <option value="+44">🇬🇧 +44</option>
+                            <option value="+86">🇨🇳 +86</option>
+                            <option value="+81">🇯🇵 +81</option>
+                            <option value="+49">🇩🇪 +49</option>
+                            <option value="+33">🇫🇷 +33</option>
+                            <option value="+61">🇦🇺 +61</option>
+                        </select>
+                        <input 
+                            type="tel" 
+                            name="phone_number" 
+                            placeholder="9876543210" 
+                            pattern="[0-9]{10}" 
+                            maxlength="10"
+                            required
+                        >
+                    </div>
+                    <small class="input-hint">Enter your 10-digit mobile number</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>Full Name <span class="required">*</span></label>
+                    <input 
+                        type="text" 
+                        name="full_name" 
+                        placeholder="John Doe"
+                        minlength="2"
+                        maxlength="100"
+                        required
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input 
+                        type="email" 
+                        name="email" 
+                        placeholder="john.doe@example.com"
+                    >
+                    <small class="input-hint">Optional - for account recovery</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>PAN Card Number</label>
+                    <input 
+                        type="text" 
+                        name="pan_card_number" 
+                        placeholder="ABCDE1234F"
+                        pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
+                        maxlength="10"
+                        style="text-transform: uppercase;"
+                    >
+                    <small class="input-hint">Format: ABCDE1234F (Optional)</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>Date of Birth <span class="required">*</span></label>
+                    <input 
+                        id="date_of_birth"
+                        type="date" 
+                        name="date_of_birth"
+                        required
+                    >
+                    <small class="input-hint">You must be at least 18 years old to register</small>
+                </div>
+                
+                <div class="feature-list">
+                    <h3>What you get:</h3>
+                    <div class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <span>Secure phone-based authentication</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <span>End-to-end encrypted messages</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <span>Multi-device support</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">✓</div>
+                        <span>PAN verification (optional)</span>
+                    </div>
+                </div>
+                
+                <button type="submit" id="signup-btn" class="btn">Create Account</button>
+                
+                <div class="login-link">
+                    <p>Already have an account?</p>
+                    <a href="/login">Login Here →</a>
+                </div>
+            </form>
+            <script>
+                // Set the max date to enforce at least 18 years old
+                (function(){
+                    const dobInput = document.getElementById('date_of_birth');
+                    const today = new Date();
+                    const year = today.getFullYear() - 18;
+                    const month = String(today.getMonth() + 1).padStart(2, '0');
+                    const day = String(today.getDate()).padStart(2, '0');
+                    const maxDate = year + '-' + month + '-' + day;
+                    if (dobInput) dobInput.max = maxDate;
+
+                    // Client-side check on submit to give instant feedback
+                    const form = dobInput && dobInput.closest('form');
+                    if (form) {
+                        form.addEventListener('submit', function(e){
+                            const val = dobInput.value;
+                            if (!val) {
+                                e.preventDefault();
+                                alert('Please enter your date of birth. You must be at least 18 years old to register.');
+                                return;
+                            }
+                            const dob = new Date(val);
+                            const today = new Date();
+                            let age = today.getFullYear() - dob.getFullYear();
+                            const m = today.getMonth() - dob.getMonth();
+                            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+                            if (age < 18) {
+                                e.preventDefault();
+                                alert('You must be at least 18 years old to register.');
+                            }
+                        });
+                    }
+                })();
+            </script>
+        </div>
+    </div>
+
+    <script>
+        // Auto-format PAN card input to uppercase
+        const panInput = document.querySelector('input[name="pan_card_number"]');
+        if (panInput) {
+            panInput.addEventListener('input', function(e) {
+                this.value = this.value.toUpperCase();
+            });
+        }
+
+        // Phone number validation
+        const phoneInput = document.querySelector('input[name="phone_number"]');
+        if (phoneInput) {
+            phoneInput.addEventListener('input', function(e) {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+        }
+
+        // Form validation
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            const phone = phoneInput.value;
+            if (phone.length !== 10) {
+                e.preventDefault();
+                alert('Please enter a valid 10-digit phone number');
+                phoneInput.focus();
+                return false;
+            }
+
+            const pan = panInput.value;
+            if (pan && pan.length !== 10) {
+                e.preventDefault();
+                alert('PAN card must be exactly 10 characters (e.g., ABCDE1234F)');
+                panInput.focus();
+                return false;
+            }
+        });
+    </script>
+</body>
+</html>

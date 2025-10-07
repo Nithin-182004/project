@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Sign Up{% endblock %}
+{% block header %}Create Account{% endblock %}
+{% block subheader %}Enter your details to sign up{% endblock %}
+{% block content %}
+<form method="POST">
+    <div class="form-group">
+        <label>Phone Number *</label>
+        <div class="phone-input-group">
+            <select name="country_code">
+                <option value="+91">+91 (IN)</option>
+                <option value="+1">+1 (US)</option>
+                <option value="+44">+44 (UK)</option>
+            </select>
+            <input type="tel" name="phone_number" placeholder="9876543210" required>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label>Full Name *</label>
+        <input type="text" name="full_name" required>
+    </div>
+    
+    <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" placeholder="your@email.com">
+    </div>
+    
+    <div class="form-group">
+        <label>PAN Card Number</label>
+        <input type="text" name="pan_card_number" placeholder="ABCDE1234F" maxlength="10" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}">
+    </div>
+    
+    <div class="form-group">
+        <label>Date of Birth</label>
+        <input type="date" name="date_of_birth">
+    </div>
+    
+    <button type="submit" class="btn">Sign Up</button>
+    
+    <div class="links">
+        Already have an account? <a href="{{ url_for('login') }}">Login</a>
+    </div>
+</form>
+{% endblock %}

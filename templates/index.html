@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Home - WhatsApp Auth{% endblock %}
+{% block header %}Welcome to WhatsApp Auth{% endblock %}
+{% block subheader %}Sign up or Login to continue{% endblock %}
+{% block content %}
+<div style="text-align: center;">
+    <p style="margin-bottom: 20px; color: #666;">
+        Secure phone-based authentication with PAN card verification
+    </p>
+    <a href="{{ url_for('signup') }}"><button class="btn">Sign Up</button></a>
+    <a href="{{ url_for('login') }}"><button class="btn btn-secondary">Login</button></a>
+    <div style="margin-top: 30px;">
+        <a href="{{ url_for('view_users') }}" style="color: #128C7E; text-decoration: none;">
+            View All Users (Admin)
+        </a>
+    </div>
+</div>
+{% endblock %}
