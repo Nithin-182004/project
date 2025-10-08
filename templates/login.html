@@ -3,16 +3,133 @@
 {% block header %}Welcome Back{% endblock %}
 {% block subheader %}Login with your phone number{% endblock %}
 {% block content %}
-<form method="POST">
-    <div class="form-group">
-        <label>Phone Number *</label>
-        <input type="tel" name="phone_number" placeholder="+919876543210" required>
-    </div>
-    
-    <button type="submit" class="btn">Send OTP</button>
+<div id="login-form">
+    <form method="POST" id="phone-form">
+        <div class="form-group">
+            <label>Phone Number <span class="required">*</span></label>
+            <input type="tel" name="phone_number" id="phone_number" placeholder="9876543210" pattern="[0-9]{10}" maxlength="10" required>
+            <small class="input-hint">Enter your 10-digit mobile number</small>
+        </div>
+        
+        <button type="submit" class="btn" id="send-otp-btn">Send OTP</button>
+    </form>
+
+    <!-- OTP Verification Form (initially hidden) -->
+    <form method="POST" id="otp-form" style="display: none;">
+        <div class="form-group">
+            <label>Enter OTP <span class="required">*</span></label>
+            <input type="text" name="otp" id="otp" placeholder="Enter 6-digit OTP" pattern="[0-9]{6}" maxlength="6" required>
+            <small class="input-hint">OTP sent to your phone number</small>
+            <div id="timer" class="input-hint"></div>
+        </div>
+        
+        <button type="submit" class="btn">Verify & Login</button>
+        <button type="button" class="btn btn-secondary" id="resend-otp" style="display: none;">Resend OTP</button>
+    </form>
     
     <div class="links">
         Don't have an account? <a href="{{ url_for('signup') }}">Sign Up</a>
     </div>
-</form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const phoneForm = document.getElementById('phone-form');
+    const otpForm = document.getElementById('otp-form');
+    const resendBtn = document.getElementById('resend-otp');
+    const timerDiv = document.getElementById('timer');
+    let countdown;
+
+    function startTimer(duration) {
+        let timer = duration;
+        resendBtn.style.display = 'none';
+        
+        clearInterval(countdown);
+        countdown = setInterval(function() {
+            const minutes = parseInt(timer / 60, 10);
+            const seconds = parseInt(timer % 60, 10);
+            
+            timerDiv.textContent = `Resend OTP in ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            
+            if (--timer < 0) {
+                clearInterval(countdown);
+                timerDiv.textContent = '';
+                resendBtn.style.display = 'block';
+            }
+        }, 1000);
+    }
+
+    // Handle phone form submission
+    phoneForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const phone = document.getElementById('phone_number').value;
+        
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ phone_number: phone })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                phoneForm.style.display = 'none';
+                otpForm.style.display = 'block';
+                startTimer(300); // 5 minutes
+                alert(data.message);
+            } else {
+                alert(data.message || 'Error sending OTP');
+            }
+        } catch (error) {
+            alert('Error: Could not send OTP');
+        }
+    });
+
+    // Handle OTP form submission
+    otpForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const otp = document.getElementById('otp').value;
+        
+        try {
+            const response = await fetch('/verify-login-otp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ otp: otp })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                window.location.href = data.redirect;
+            } else {
+                alert(data.message || 'Invalid OTP');
+            }
+        } catch (error) {
+            alert('Error: Could not verify OTP');
+        }
+    });
+
+    // Handle resend OTP
+    resendBtn.addEventListener('click', async function() {
+        try {
+            const response = await fetch('/resend-login-otp');
+            const data = await response.json();
+            
+            if (data.success) {
+                startTimer(300); // 5 minutes
+                alert(data.message);
+            } else {
+                alert(data.message || 'Error resending OTP');
+            }
+        } catch (error) {
+            alert('Error: Could not resend OTP');
+        }
+    });
+});
+</script>
 {% endblock %}

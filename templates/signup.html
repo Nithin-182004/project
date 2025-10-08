@@ -155,6 +155,69 @@
         .phone-group input {
             flex: 1;
         }
+
+        .verification-group {
+            margin-bottom: 10px;
+        }
+
+        .verification-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-verify {
+            padding: 8px 16px;
+            font-size: 14px;
+            background: #128C7E;
+        }
+
+        .verification-status {
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .verification-status.verified {
+            color: #28a745;
+        }
+
+        .verification-status.pending {
+            color: #ffc107;
+        }
+
+        .verification-status.error {
+            color: #dc3545;
+        }
+
+        .otp-input-group {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .otp-input-group input {
+            width: 150px;
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+
+        .timer {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            padding: 8px 16px;
+            font-size: 14px;
+        }
         
         .input-hint {
             font-size: 12px;
@@ -308,25 +371,45 @@
             <form method="POST" action="/signup">
                 <div class="form-group">
                     <label>Phone Number <span class="required">*</span></label>
-                    <div class="phone-group">
-                        <select name="country_code" required>
-                            <option value="+91">🇮🇳 +91</option>
-                            <option value="+1">🇺🇸 +1</option>
-                            <option value="+44">🇬🇧 +44</option>
-                            <option value="+86">🇨🇳 +86</option>
-                            <option value="+81">🇯🇵 +81</option>
-                            <option value="+49">🇩🇪 +49</option>
-                            <option value="+33">🇫🇷 +33</option>
-                            <option value="+61">🇦🇺 +61</option>
-                        </select>
-                        <input 
-                            type="tel" 
-                            name="phone_number" 
-                            placeholder="9876543210" 
-                            pattern="[0-9]{10}" 
-                            maxlength="10"
-                            required
-                        >
+                    <div class="verification-group">
+                        <div class="phone-group">
+                            <select name="country_code" id="country_code" required>
+                                <option value="+91">🇮🇳 +91</option>
+                                <option value="+1">🇺🇸 +1</option>
+                                <option value="+44">🇬🇧 +44</option>
+                                <option value="+86">🇨🇳 +86</option>
+                                <option value="+81">🇯🇵 +81</option>
+                                <option value="+49">🇩🇪 +49</option>
+                                <option value="+33">🇫🇷 +33</option>
+                                <option value="+61">🇦🇺 +61</option>
+                            </select>
+                            <input 
+                                type="tel" 
+                                name="phone_number" 
+                                id="phone_number"
+                                placeholder="9876543210" 
+                                pattern="[0-9]{10}" 
+                                maxlength="10"
+                                required
+                            >
+                        </div>
+                        <div class="verification-actions">
+                            <button type="button" class="btn btn-verify" id="verify-phone-btn">Verify Phone</button>
+                            <span class="verification-status" id="phone-status"></span>
+                        </div>
+                        <!-- OTP input for phone (initially hidden) -->
+                        <div class="otp-input-group" id="phone-otp-group" style="display: none;">
+                            <input 
+                                type="text" 
+                                id="phone-otp" 
+                                placeholder="Enter 6-digit OTP"
+                                pattern="[0-9]{6}"
+                                maxlength="6"
+                            >
+                            <button type="button" class="btn" id="verify-phone-otp-btn">Verify OTP</button>
+                            <button type="button" class="btn btn-secondary" id="resend-phone-otp" style="display: none;">Resend OTP</button>
+                            <div id="phone-timer" class="timer"></div>
+                        </div>
                     </div>
                     <small class="input-hint">Enter your 10-digit mobile number</small>
                 </div>
@@ -344,13 +427,34 @@
                 </div>
                 
                 <div class="form-group">
-                    <label>Email Address</label>
-                    <input 
-                        type="email" 
-                        name="email" 
-                        placeholder="john.doe@example.com"
-                    >
-                    <small class="input-hint">Optional - for account recovery</small>
+                    <label>Email Address <span class="required">*</span></label>
+                    <div class="verification-group">
+                        <input 
+                            type="email" 
+                            name="email" 
+                            id="email"
+                            placeholder="john.doe@example.com"
+                            required
+                        >
+                        <div class="verification-actions">
+                            <button type="button" class="btn btn-verify" id="verify-email-btn">Verify Email</button>
+                            <span class="verification-status" id="email-status"></span>
+                        </div>
+                        <!-- OTP input for email (initially hidden) -->
+                        <div class="otp-input-group" id="email-otp-group" style="display: none;">
+                            <input 
+                                type="text" 
+                                id="email-otp" 
+                                placeholder="Enter 6-digit OTP"
+                                pattern="[0-9]{6}"
+                                maxlength="6"
+                            >
+                            <button type="button" class="btn" id="verify-email-otp-btn">Verify OTP</button>
+                            <button type="button" class="btn btn-secondary" id="resend-email-otp" style="display: none;">Resend OTP</button>
+                            <div id="email-timer" class="timer"></div>
+                        </div>
+                    </div>
+                    <small class="input-hint">Required for account security and recovery</small>
                 </div>
                 
                 <div class="form-group">
@@ -405,8 +509,8 @@
                 </div>
             </form>
             <script>
-                // Set the max date to enforce at least 18 years old
-                (function(){
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Age validation
                     const dobInput = document.getElementById('date_of_birth');
                     const today = new Date();
                     const year = today.getFullYear() - 18;
@@ -415,28 +519,207 @@
                     const maxDate = year + '-' + month + '-' + day;
                     if (dobInput) dobInput.max = maxDate;
 
-                    // Client-side check on submit to give instant feedback
-                    const form = dobInput && dobInput.closest('form');
-                    if (form) {
-                        form.addEventListener('submit', function(e){
-                            const val = dobInput.value;
-                            if (!val) {
-                                e.preventDefault();
-                                alert('Please enter your date of birth. You must be at least 18 years old to register.');
-                                return;
+                    // Phone verification elements
+                    const phoneBtn = document.getElementById('verify-phone-btn');
+                    const phoneStatus = document.getElementById('phone-status');
+                    const phoneOtpGroup = document.getElementById('phone-otp-group');
+                    const phoneOtpInput = document.getElementById('phone-otp');
+                    const verifyPhoneOtpBtn = document.getElementById('verify-phone-otp-btn');
+                    const resendPhoneOtpBtn = document.getElementById('resend-phone-otp');
+                    const phoneTimer = document.getElementById('phone-timer');
+
+                    // Email verification elements
+                    const emailBtn = document.getElementById('verify-email-btn');
+                    const emailStatus = document.getElementById('email-status');
+                    const emailOtpGroup = document.getElementById('email-otp-group');
+                    const emailOtpInput = document.getElementById('email-otp');
+                    const verifyEmailOtpBtn = document.getElementById('verify-email-otp-btn');
+                    const resendEmailOtpBtn = document.getElementById('resend-email-otp');
+                    const emailTimer = document.getElementById('email-timer');
+
+                    let phoneVerified = false;
+                    let emailVerified = false;
+
+                    function startTimer(duration, timerDiv, resendBtn) {
+                        let timer = duration;
+                        resendBtn.style.display = 'none';
+                        
+                        const countdown = setInterval(function() {
+                            const minutes = parseInt(timer / 60, 10);
+                            const seconds = parseInt(timer % 60, 10);
+                            
+                            timerDiv.textContent = `Resend in ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                            
+                            if (--timer < 0) {
+                                clearInterval(countdown);
+                                timerDiv.textContent = '';
+                                resendBtn.style.display = 'block';
                             }
-                            const dob = new Date(val);
-                            const today = new Date();
-                            let age = today.getFullYear() - dob.getFullYear();
-                            const m = today.getMonth() - dob.getMonth();
-                            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
-                            if (age < 18) {
-                                e.preventDefault();
-                                alert('You must be at least 18 years old to register.');
-                            }
-                        });
+                        }, 1000);
+                        return countdown;
                     }
-                })();
+
+                    // Phone verification
+                    phoneBtn.addEventListener('click', async () => {
+                        const phone = document.getElementById('phone_number').value;
+                        const countryCode = document.getElementById('country_code').value;
+                        
+                        if (!phone) {
+                            alert('Please enter your phone number');
+                            return;
+                        }
+
+                        try {
+                            const response = await fetch('/send-phone-otp', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ phone_number: phone, country_code: countryCode })
+                            });
+                            
+                            const data = await response.json();
+                            if (data.success) {
+                                phoneOtpGroup.style.display = 'flex';
+                                phoneStatus.innerHTML = `📱 OTP sent: ${data.message.split(': ')[1]}`;
+                                phoneStatus.className = 'verification-status pending';
+                                startTimer(300, phoneTimer, resendPhoneOtpBtn);
+                            } else {
+                                alert(data.message);
+                            }
+                        } catch (error) {
+                            alert('Error sending OTP');
+                        }
+                    });
+
+                    verifyPhoneOtpBtn.addEventListener('click', async () => {
+                        const otp = phoneOtpInput.value;
+                        if (!otp) {
+                            alert('Please enter the OTP');
+                            return;
+                        }
+
+                        try {
+                            const response = await fetch('/verify-phone-otp', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ phone_otp: otp })
+                            });
+                            
+                            const data = await response.json();
+                            if (data.success) {
+                                phoneVerified = true;
+                                phoneStatus.innerHTML = '✅ Verified';
+                                phoneStatus.className = 'verification-status verified';
+                                phoneOtpGroup.style.display = 'none';
+                                phoneBtn.disabled = true;
+                                // Disable phone input after verification
+                                document.getElementById('phone_number').disabled = true;
+                                document.getElementById('country_code').disabled = true;
+                            } else {
+                                alert(data.message);
+                            }
+                        } catch (error) {
+                            alert('Error verifying OTP');
+                        }
+                    });
+
+                    resendPhoneOtpBtn.addEventListener('click', () => phoneBtn.click());
+
+                    // Email verification
+                    emailBtn.addEventListener('click', async () => {
+                        const email = document.getElementById('email').value;
+                        
+                        if (!email) {
+                            alert('Please enter your email address');
+                            return;
+                        }
+
+                        try {
+                            const response = await fetch('/send-email-otp', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ email: email })
+                            });
+                            
+                            const data = await response.json();
+                            if (data.success) {
+                                emailOtpGroup.style.display = 'flex';
+                                emailStatus.innerHTML = `📧 OTP sent: ${data.message.split(': ')[1]}`;
+                                emailStatus.className = 'verification-status pending';
+                                startTimer(300, emailTimer, resendEmailOtpBtn);
+                            } else {
+                                alert(data.message);
+                            }
+                        } catch (error) {
+                            alert('Error sending OTP');
+                        }
+                    });
+
+                    verifyEmailOtpBtn.addEventListener('click', async () => {
+                        const otp = emailOtpInput.value;
+                        if (!otp) {
+                            alert('Please enter the OTP');
+                            return;
+                        }
+
+                        try {
+                            const response = await fetch('/verify-email-otp', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ email_otp: otp })
+                            });
+                            
+                            const data = await response.json();
+                            if (data.success) {
+                                emailVerified = true;
+                                emailStatus.innerHTML = '✅ Verified';
+                                emailStatus.className = 'verification-status verified';
+                                emailOtpGroup.style.display = 'none';
+                                emailBtn.disabled = true;
+                                // Disable email input after verification
+                                document.getElementById('email').disabled = true;
+                            } else {
+                                alert(data.message);
+                            }
+                        } catch (error) {
+                            alert('Error verifying OTP');
+                        }
+                    });
+
+                    resendEmailOtpBtn.addEventListener('click', () => emailBtn.click());
+
+                    // Form submission
+                    const form = document.querySelector('form');
+                    form.addEventListener('submit', function(e) {
+                        // Age validation
+                        const val = dobInput.value;
+                        if (!val) {
+                            e.preventDefault();
+                            alert('Please enter your date of birth. You must be at least 18 years old to register.');
+                            return;
+                        }
+                        const dob = new Date(val);
+                        const age = today.getFullYear() - dob.getFullYear();
+                        const m = today.getMonth() - dob.getMonth();
+                        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+                        if (age < 18) {
+                            e.preventDefault();
+                            alert('You must be at least 18 years old to register.');
+                            return;
+                        }
+
+                        // Verification validation
+                        if (!phoneVerified) {
+                            e.preventDefault();
+                            alert('Please verify your phone number');
+                            return;
+                        }
+                        if (!emailVerified) {
+                            e.preventDefault();
+                            alert('Please verify your email address');
+                            return;
+                        }
+                    });
+                });
             </script>
         </div>
     </div>
